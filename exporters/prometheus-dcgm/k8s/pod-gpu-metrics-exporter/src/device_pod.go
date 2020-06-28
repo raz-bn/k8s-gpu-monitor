@@ -108,7 +108,7 @@ func addPodInfoToMetrics(dir string, srcFile string, destFile string, deviceToPo
 func addPodInfoToLine(originalLine string, pod devicePodInfo) string {
 	//TODO
 	//find a better way to insert hostname
-	hostname, _ :=  os.Hostname()
+	hostname, err :=  os.Hostname()
 	if err != nil {hostname = "err"}
 	splitOriginalLine := strings.Split(originalLine, "}")
         newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\",host_name=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, hostname, splitOriginalLine[1])
