@@ -19,10 +19,15 @@ type devicePodInfo struct {
 	name      string
 	namespace string
 	container string
+	hostname  string
 }
 
 // Helper function that creates a map of pod info for each device
 func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map[string]devicePodInfo {
+	//TODO
+	//find a better way to insert hostname
+	hostName, err :=  os.Hostname()
+	if err != nil {hostname = "err"}
 	deviceToPodMap := make(map[string]devicePodInfo)
 
 	for _, pod := range devicePods.GetPodResources() {
@@ -33,6 +38,7 @@ func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map
 						name:      pod.GetName(),
 						namespace: pod.GetNamespace(),
 						container: container.GetName(),
+						hostname:  hostName
 					}
 					for _, uuid := range device.GetDeviceIds() {
 						deviceToPodMap[uuid] = podInfo
@@ -106,11 +112,7 @@ func addPodInfoToMetrics(dir string, srcFile string, destFile string, deviceToPo
 }
 
 func addPodInfoToLine(originalLine string, pod devicePodInfo) string {
-	//TODO
-	//find a better way to insert hostname
-	hostname, err :=  os.Hostname()
-	if err != nil {hostname = "err"}
 	splitOriginalLine := strings.Split(originalLine, "}")
-        newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\",host_name=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, hostname, splitOriginalLine[1])
+        newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\",host_name=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, pod.hostname, splitOriginalLine[1])
         return newLineWithPodName
 }
