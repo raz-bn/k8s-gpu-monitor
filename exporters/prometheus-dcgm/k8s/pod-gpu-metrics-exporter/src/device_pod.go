@@ -38,7 +38,7 @@ func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map
 						name:      pod.GetName(),
 						namespace: pod.GetNamespace(),
 						container: container.GetName(),
-						hostname:  hostName
+						hostname:  hostName,
 					}
 					for _, uuid := range device.GetDeviceIds() {
 						deviceToPodMap[uuid] = podInfo
