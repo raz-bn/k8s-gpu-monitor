@@ -27,7 +27,7 @@ func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map
 	//TODO
 	//find a better way to insert hostname
 	hostName, err :=  os.Hostname()
-	if err != nil {hostname = "err"}
+	if err != nil {hostName = "err"}
 	deviceToPodMap := make(map[string]devicePodInfo)
 
 	for _, pod := range devicePods.GetPodResources() {
