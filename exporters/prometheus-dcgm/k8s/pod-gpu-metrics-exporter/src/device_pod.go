@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
         //"github.com/golang/glog"
-
+	nodeapi         "k8s.io/kubernetes/pkg/util/node"
 	podresourcesapi "k8s.io/kubernetes/pkg/kubelet/apis/podresources/v1alpha1"
 )
 
@@ -108,6 +108,6 @@ func addPodInfoToMetrics(dir string, srcFile string, destFile string, deviceToPo
 
 func addPodInfoToLine(originalLine string, pod devicePodInfo) string {
 	splitOriginalLine := strings.Split(originalLine, "}")
-        newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, splitOriginalLine[1])
+        newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\",host_name=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, nodeapi.GetHostname(), splitOriginalLine[1])
         return newLineWithPodName
 }
