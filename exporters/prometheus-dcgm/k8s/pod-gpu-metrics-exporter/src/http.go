@@ -8,7 +8,7 @@ import (
 	"github.com/golang/glog"
 )
 
-const gpuMetricsEndpoint = "/gpu/metrics"
+const gpuMetricsEndpoint = "/metrics"
 
 func newHttpServer(addr string) *http.Server {
 	mux := http.NewServeMux()
