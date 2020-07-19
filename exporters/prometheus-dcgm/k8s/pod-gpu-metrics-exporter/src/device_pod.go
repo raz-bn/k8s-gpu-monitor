@@ -14,7 +14,7 @@ import (
 	podresourcesapi "k8s.io/kubernetes/pkg/kubelet/apis/podresources/v1alpha1"
 )
 
-const nvidiaResourceName = "nvidia.com/gpu"
+//const nvidiaResourceName = "nvidia.com/gpu"
 
 type devicePodInfo struct {
 	name      string
@@ -24,12 +24,16 @@ type devicePodInfo struct {
 
 // Helper function that creates a map of pod info for each device
 func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map[string]devicePodInfo {
+	nvidiaResourceName := map[string]bool{
+		"nvidia.com/gpu": true,
+		"tencent.com/vcuda-core":  true,
+		"tencent.com/vcuda-memory":  true,
+	} 
 	deviceToPodMap := make(map[string]devicePodInfo)
-
 	for _, pod := range devicePods.GetPodResources() {
 		for _, container := range pod.GetContainers() {
 			for _, device := range container.GetDevices() {
-				if device.GetResourceName() == nvidiaResourceName {
+				if  nvidiaResourceName[device.GetResourceName()] {
 					podInfo := devicePodInfo{
 						name:      pod.GetName(),
 						namespace: pod.GetNamespace(),
@@ -38,6 +42,7 @@ func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map
 					for _, uuid := range device.GetDeviceIds() {
 						deviceToPodMap[uuid] = podInfo
 					}
+					break
 				}
 			}
 		}
