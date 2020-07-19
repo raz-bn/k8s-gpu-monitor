@@ -3,7 +3,8 @@
 package main
 
 import (
-	"bufio"
+	"github.com/golang/glog"
+    "bufio"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -33,7 +34,7 @@ func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map
 	for _, pod := range devicePods.GetPodResources() {
 		for _, container := range pod.GetContainers() {
 			for _, device := range container.GetDevices() {
-				if  nvidiaResourceName[device.GetResourceName()] {
+                if  nvidiaResourceName[device.GetResourceName()] {
 					podInfo := devicePodInfo{
 						name:      pod.GetName(),
 						namespace: pod.GetNamespace(),
@@ -92,14 +93,13 @@ func addPodInfoToMetrics(dir string, srcFile string, destFile string, deviceToPo
 		if string(line[0]) != "#" {
 			uuid := strings.Split(strings.Split(line, ",")[1], "\"")[1]
                         gpuIndex := strings.Split(strings.Split(strings.Split(line, "{")[1], ",")[0], "\"")[1]
-                        //glog.Infof("addPodInfoToMetrics. uuid=<%s> gpuIndex=<%v>", uuid, gpuIndex)
-                        
+            glog.Infof("addPodInfoToMetrics. uuid=<%s> gpuIndex=<%v>", uuid, gpuIndex)
 			if pod, exists := deviceToPodMap[uuid]; exists {
-				//glog.Infof("addPodInfoToMetrics. added pod name from uuid")
+				glog.Infof("addPodInfoToMetrics. added pod name from uuid")
  				line = addPodInfoToLine(line, pod)
 			}
                         if pod, exists := deviceToPodMap["nvidia" + string(gpuIndex)]; exists {
-				//glog.Infof("addPodInfoToMetrics. added pod name from gpu index")
+                  				glog.Infof("addPodInfoToMetrics. added pod name from gpu index")
                                 line = addPodInfoToLine(line, pod)
                         }
 		}

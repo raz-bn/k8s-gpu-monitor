@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/signal"
 	"time"
-
 	"github.com/golang/glog"
 	"gopkg.in/fsnotify/fsnotify.v1"
 )
@@ -39,7 +38,7 @@ func watchAndWriteGPUmetrics() {
 			if event.Name == gpuMetrics && event.Op&fsnotify.Create == fsnotify.Create {
 				glog.V(1).Infof("inotify: %s created, now adding device pod information.", gpuMetrics)
 				podMap, err := getDevicePodInfo(socketPath)
-     				//glog.Infof("createDevicePodMap. podMap=<%s>", podMap)
+     			glog.Infof("createDevicePodMap. podMap=<%s>", podMap)
 				if err != nil {
 					glog.Error(err)
 					continue
