@@ -13,6 +13,8 @@ import (
         //"github.com/golang/glog"
 
 	podresourcesapi "k8s.io/kubernetes/pkg/kubelet/apis/podresources/v1alpha1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
 
 //const nvidiaResourceName = "nvidia.com/gpu"
@@ -21,6 +23,7 @@ type devicePodInfo struct {
 	name      string
 	namespace string
 	container string
+	node	  string
 }
 
 // Helper function that creates a map of pod info for each device
@@ -39,8 +42,15 @@ func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map
 						name:      pod.GetName(),
 						namespace: pod.GetNamespace(),
 						container: container.GetName(),
+						node:	   os.Hostname()
 					}
-					for _, uuid := range device.GetDeviceIds() {
+					if device.GetResourceName() == "nvidia.com/gpu" {
+						for _, uuid := range device.GetDeviceIds() {
+							deviceToPodMap[uuid] = podInfo
+						}
+					}
+					else{
+						uuid := getGpuUuid(podInfo)
 						deviceToPodMap[uuid] = podInfo
 					}
 					break
@@ -49,6 +59,28 @@ func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map
 		}
 	}
 	return deviceToPodMap
+}
+
+//only relevent for gpu-manager cases
+func getGpuUuid(devicePodInfo podInfo) string{
+	config, err := rest.InClusterConfig()
+	if err != nil {
+		panic(err.Error())
+	}
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err.Error())
+	}
+	pod, err := clientset.CoreV1().Pods(podInfo.namespace).Get(podInfo.name, metav1.GetOptions{})
+	for _, container := range pod.Spec.Containers {
+		if contianer.Name == podInfo.container{
+			for _, envar := range container.Env {
+				if envar == "NVIDIA_VISIBLE_DEVICES" {
+					return envar.Value
+				}
+			}
+		}
+	}
 }
 
 func getDevicePodInfo(socket string) (map[string]devicePodInfo, error) {
@@ -113,6 +145,6 @@ func addPodInfoToMetrics(dir string, srcFile string, destFile string, deviceToPo
 
 func addPodInfoToLine(originalLine string, pod devicePodInfo) string {
 	splitOriginalLine := strings.Split(originalLine, "}")
-        newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, splitOriginalLine[1])
+        newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\",node=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, pod.node, splitOriginalLine[1])
         return newLineWithPodName
 }
