@@ -1,6 +1,6 @@
 # Pod GPU Metrics Exporter
 
-A simple go http server serving per pod GPU metrics at localhost:9400/gpu/metrics. The exporter connects to kubelet gRPC server (/var/lib/kubelet/pod-resources) to identify the GPUs running on a pod leveraging Kubernetes [device assignment feature](https://github.com/vikaschoudhary16/community/blob/060a25c441269be476ade624ea0347ebc113e659/keps/sig-node/compute-device-assignment.md) and appends the GPU device's pod information to metrics collected by [dcgm-exporter](https://github.com/NVIDIA/gpu-monitoring-tools/tree/master/exporters/prometheus-dcgm/dcgm-exporter).
+A simple go http server serving per pod GPU metrics at localhost:9500/gpu/metrics. The exporter connects to kubelet gRPC server (/var/lib/kubelet/pod-resources) to identify the GPUs running on a pod leveraging Kubernetes [device assignment feature](https://github.com/vikaschoudhary16/community/blob/060a25c441269be476ade624ea0347ebc113e659/keps/sig-node/compute-device-assignment.md) and appends the GPU device's pod information to metrics collected by [dcgm-exporter](https://github.com/NVIDIA/gpu-monitoring-tools/tree/master/exporters/prometheus-dcgm/dcgm-exporter).
 
 The http server allows Prometheus to scrape GPU metrics directly via a separate endpoint without relying on node-exporter. But if you still want to scrape GPU metrics via node-exporter, follow [these instructions](https://github.com/NVIDIA/gpu-monitoring-tools/tree/master/exporters/prometheus-dcgm#node_exporter).
 
@@ -39,10 +39,10 @@ $ docker build -t pod-gpu-metrics-exporter .
 # Make sure to run dcgm-exporter
 $ docker run -d --runtime=nvidia --rm --name=nvidia-dcgm-exporter nvidia/dcgm-exporter
 
-$ docker run -d --privileged --rm -p 9400:9400 -v /var/lib/kubelet/pod-resources:/var/lib/kubelet/pod-resources --volumes-from nvidia-dcgm-exporter:ro nvidia/pod-gpu-metrics-exporter:v1.0.0-alpha
+$ docker run -d --privileged --rm -p 9500:9500 -v /var/lib/kubelet/pod-resources:/var/lib/kubelet/pod-resources --volumes-from nvidia-dcgm-exporter:ro nvidia/pod-gpu-metrics-exporter:v1.0.0-alpha
 
 # Check GPU metrics
-$ curl -s localhost:9400/gpu/metrics
+$ curl -s localhost:9500/gpu/metrics
 
 # Sample output
 

@@ -20,4 +20,4 @@ data:
       scheme: http
       static_configs:
       - targets:
-        - localhost:9400
+        - localhost:9500

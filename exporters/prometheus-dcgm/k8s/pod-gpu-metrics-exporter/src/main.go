@@ -8,9 +8,9 @@ import (
 )
 
 // http port serving metrics
-const port = ":9400"
+const port = ":9500"
 
-// res: curl localhost:9400/gpu/metrics
+// res: curl localhost:9500/gpu/metrics
 func main() {
 	defer glog.Flush()
 	flag.Parse()

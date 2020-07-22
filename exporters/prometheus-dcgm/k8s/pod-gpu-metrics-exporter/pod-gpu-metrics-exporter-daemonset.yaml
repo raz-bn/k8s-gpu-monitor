@@ -15,8 +15,8 @@ spec:
         name: pod-nvidia-gpu-metrics-exporter
         ports:
         - name: gpu-metrics
-          containerPort: 9400
-          hostPort: 9400
+          containerPort: 9500
+          hostPort: 9500
         securityContext:
           runAsNonRoot: false
           runAsUser: 0

@@ -20,6 +20,7 @@ type devicePodInfo struct {
 	name      string
 	namespace string
 	container string
+	node      string
 }
 
 // Helper function that creates a map of pod info for each device
@@ -34,6 +35,7 @@ func createDevicePodMap(devicePods podresourcesapi.ListPodResourcesResponse) map
 						name:      pod.GetName(),
 						namespace: pod.GetNamespace(),
 						container: container.GetName(),
+						node:      os.Getenv("NODE_NAME"),
 					}
 					for _, uuid := range device.GetDeviceIds() {
 						deviceToPodMap[uuid] = podInfo
@@ -108,6 +110,6 @@ func addPodInfoToMetrics(dir string, srcFile string, destFile string, deviceToPo
 
 func addPodInfoToLine(originalLine string, pod devicePodInfo) string {
 	splitOriginalLine := strings.Split(originalLine, "}")
-        newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, splitOriginalLine[1])
+        newLineWithPodName := fmt.Sprintf("%s,pod_name=\"%s\",pod_namespace=\"%s\",container_name=\"%s\",node=\"%s\"}%s", splitOriginalLine[0], pod.name, pod.namespace, pod.container, pod.node, splitOriginalLine[1])
         return newLineWithPodName
 }
