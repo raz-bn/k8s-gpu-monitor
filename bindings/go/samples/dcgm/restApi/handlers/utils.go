@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"text/template"
 
-	"github.com/NVIDIA/gpu-monitoring-tools/bindings/go/dcgm"
+	"github.com/raz-bn/k8s-gpu-monitor/bindings/go/dcgm"
 )
 
 const (

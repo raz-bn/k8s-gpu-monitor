@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	h "github.com/NVIDIA/gpu-monitoring-tools/bindings/go/samples/dcgm/restApi/handlers"
 	"github.com/gorilla/mux"
+	h "github.com/raz-bn/k8s-gpu-monitor/bindings/go/samples/dcgm/restApi/handlers"
 )
 
 const timeout = 5 * time.Second

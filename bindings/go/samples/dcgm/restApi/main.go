@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/NVIDIA/gpu-monitoring-tools/bindings/go/dcgm"
+	"github.com/raz-bn/k8s-gpu-monitor/bindings/go/dcgm"
 )
 
 // res: curl localhost:8070/dcgm/device/info/id/0

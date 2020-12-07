@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/NVIDIA/gpu-monitoring-tools/bindings/go/dcgm"
 	"github.com/gorilla/mux"
+	"github.com/raz-bn/k8s-gpu-monitor/bindings/go/dcgm"
 )
 
 func getDcgmStatus(resp http.ResponseWriter, req *http.Request) (status *dcgm.DcgmStatus) {

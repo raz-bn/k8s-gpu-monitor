@@ -109,7 +109,7 @@ $ curl -s localhost:9101/metrics
 
 ### Per Pod GPU metrics
 
-If you want to get per pod GPU metrics directly in Prometheus, deploy [pod-gpu-metrics-exporter](https://github.com/NVIDIA/gpu-monitoring-tools/tree/master/exporters/prometheus-dcgm/k8s/pod-gpu-metrics-exporter#pod-gpu-metrics-exporter).
+If you want to get per pod GPU metrics directly in Prometheus, deploy [pod-gpu-metrics-exporter](https://github.com/raz-bn/k8s-gpu-monitor/tree/master/exporters/prometheus-dcgm/k8s/pod-gpu-metrics-exporter#pod-gpu-metrics-exporter).
 
 
 ### Helm Charts
